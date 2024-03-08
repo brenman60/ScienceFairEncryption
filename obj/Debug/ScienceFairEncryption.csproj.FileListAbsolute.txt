@@ -1,0 +1,7 @@
+C:\Users\Brennan\source\repos\ScienceFairEncryption\obj\Debug\ScienceFairEncryption.csproj.AssemblyReference.cache
+C:\Users\Brennan\source\repos\ScienceFairEncryption\obj\Debug\ScienceFairEncryption.csproj.CoreCompileInputs.cache
+C:\Users\Brennan\source\repos\ScienceFairEncryption\bin\Debug\ScienceFairEncryption.exe.config
+C:\Users\Brennan\source\repos\ScienceFairEncryption\bin\Debug\ScienceFairEncryption.exe
+C:\Users\Brennan\source\repos\ScienceFairEncryption\bin\Debug\ScienceFairEncryption.pdb
+C:\Users\Brennan\source\repos\ScienceFairEncryption\obj\Debug\ScienceFairEncryption.exe
+C:\Users\Brennan\source\repos\ScienceFairEncryption\obj\Debug\ScienceFairEncryption.pdb
