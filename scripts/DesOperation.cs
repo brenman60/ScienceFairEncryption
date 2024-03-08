@@ -6,21 +6,26 @@ using System.Threading.Tasks;
 
 namespace EncryptionDecryptionUsingSymmetricKey
 {
-    public class AesOperation
+    public class DesOperation
     {
-        private static readonly string key = "b14ca5898a4e4133bbce2ea2315a1916";
+        private static readonly string key = "b14ca589"; // 8-byte key for DES
+
+        public static string Key
+        {
+            get { return key; }
+        }
 
         public async static Task<string> EncryptString(string plainText)
         {
-            byte[] iv = new byte[16];
+            byte[] iv = new byte[8]; // 8-byte IV for DES
             byte[] array;
 
-            using (Aes aes = Aes.Create())
+            using (DESCryptoServiceProvider des = new DESCryptoServiceProvider())
             {
-                aes.Key = Encoding.UTF8.GetBytes(key);
-                aes.IV = iv;
+                des.Key = Encoding.UTF8.GetBytes(key);
+                des.IV = iv;
 
-                ICryptoTransform encryptor = aes.CreateEncryptor(aes.Key, aes.IV);
+                ICryptoTransform encryptor = des.CreateEncryptor(des.Key, des.IV);
 
                 using (MemoryStream memoryStream = new MemoryStream())
                 {
@@ -41,20 +46,20 @@ namespace EncryptionDecryptionUsingSymmetricKey
 
         public static async Task<string> DecryptString(string cipherText)
         {
-            byte[] iv = new byte[16];
+            byte[] iv = new byte[8]; // 8-byte IV for DES
             byte[] buffer = Convert.FromBase64String(cipherText);
 
-            using (Aes aes = Aes.Create())
+            using (DESCryptoServiceProvider des = new DESCryptoServiceProvider())
             {
-                aes.Key = Encoding.UTF8.GetBytes(key);
-                aes.IV = iv;
-                ICryptoTransform decryptor = aes.CreateDecryptor(aes.Key, aes.IV);
+                des.Key = Encoding.UTF8.GetBytes(key);
+                des.IV = iv;
+                ICryptoTransform decryptor = des.CreateDecryptor(des.Key, des.IV);
 
                 using (MemoryStream memoryStream = new MemoryStream(buffer))
                 {
-                    using (CryptoStream cryptoStream = new CryptoStream((Stream)memoryStream, decryptor, CryptoStreamMode.Read))
+                    using (CryptoStream cryptoStream = new CryptoStream(memoryStream, decryptor, CryptoStreamMode.Read))
                     {
-                        using (StreamReader streamReader = new StreamReader((Stream)cryptoStream))
+                        using (StreamReader streamReader = new StreamReader(cryptoStream))
                         {
                             return await streamReader.ReadToEndAsync();
                         }

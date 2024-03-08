@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Text;
+using System.Threading.Tasks;
 using EncryptionDecryptionUsingSymmetricKey;
 
 namespace ScienceFairEncryption
@@ -10,9 +12,17 @@ namespace ScienceFairEncryption
     {
         static Dictionary<string, long> files = new Dictionary<string, long>()
         {
-            ["encryptionAES1.txt"] = 1000, // one kb
-            ["encryptionAES2.txt"] = 1000000, // one mb
-            ["encryptionAES3.txt"] = 1000000000, // one gb 
+            ["encryptionAES1.txt"] = 1000, // one KB
+            ["encryptionAES2.txt"] = 1000000, // one MB
+            ["encryptionAES3.txt"] = 1000000 * 10, // ten MB
+            ["encryptionAES4.txt"] = 1000000 * 25, // twenty five MB
+            ["encryptionAES5.txt"] = 1000000 * 50, // fifty MB
+
+            ["encryptionAES6.txt"] = 1000, // one KB
+            ["encryptionAES7.txt"] = 1000000, // one MB
+            ["encryptionAES8.txt"] = 1000000 * 10, // ten MB
+            ["encryptionAES9.txt"] = 1000000 * 25, // twenty five MB
+            ["encryptionAES10.txt"] = 1000000 * 50, // fifty MB
         };
 
         static void print(object text) => Console.WriteLine(text);
@@ -36,26 +46,60 @@ namespace ScienceFairEncryption
         {
             const int blockSize = 1024 * 8;
             const int blocksPerMb = (1024 * 1024) / blockSize;
-            byte[] data = new byte[blockSize];
+            char[] data = new char[blockSize];
             Random rng = new Random();
+
             using (FileStream stream = File.OpenWrite(getFilePath(fileName)))
             {
                 for (int i = 0; i < (length / 1000000) * blocksPerMb; i++)
                 {
-                    rng.NextBytes(data);
-                    stream.Write(data, 0, data.Length);
+                    for (int j = 0; j < blockSize; j++)
+                    {
+                        data[j] = (char)('A' + rng.Next(26));
+                    }
+
+                    string blockContent = new string(data);
+                    byte[] bytes = Encoding.UTF8.GetBytes(blockContent);
+                    stream.Write(bytes, 0, bytes.Length);
                 }
             }
         }
         
-        static async void encryptFileContent(string fileName)
+        static async Task<string> encryptFileContent(string fileName, EncryptionMode mode)
         {
-            using (FileStream fileStream = new FileStream(getFilePath(fileName), FileMode.Open))
-                using (StreamReader reader = new StreamReader(fileStream))
-                    AesOperation.EncryptString(await reader.ReadToEndAsync());
+            switch (mode) 
+            {
+                case EncryptionMode.AES:
+                    using (FileStream fileStream = new FileStream(getFilePath(fileName), FileMode.Open))
+                        using (StreamReader reader = new StreamReader(fileStream))
+                            return await AesOperation.EncryptString(await reader.ReadToEndAsync());
+                case EncryptionMode.DES:
+                    using (FileStream fileStream = new FileStream(getFilePath(fileName), FileMode.Open))
+                        using (StreamReader reader = new StreamReader(fileStream))
+                            return await DesOperation.EncryptString(await reader.ReadToEndAsync());
+                default:
+                    return null;
+            }
         }
 
-        static void Main(string[] args)
+        static async Task<string> decryptFileContent(string fileName, EncryptionMode mode)
+        {
+            switch (mode)
+            {
+                case EncryptionMode.AES:
+                    using (FileStream fileStream = new FileStream(getFilePath(fileName), FileMode.Open))
+                    using (StreamReader reader = new StreamReader(fileStream))
+                        return await AesOperation.DecryptString(await reader.ReadToEndAsync());
+                case EncryptionMode.DES:
+                    using (FileStream fileStream = new FileStream(getFilePath(fileName), FileMode.Open))
+                    using (StreamReader reader = new StreamReader(fileStream))
+                        return await DesOperation.DecryptString(await reader.ReadToEndAsync());
+                default:
+                    return null;
+            }
+        }
+
+        static async Task Main(string[] args)
         {
             if (!Directory.Exists(Path.Combine(Directory.GetCurrentDirectory(), "files")))
                 Directory.CreateDirectory(Path.Combine(Directory.GetCurrentDirectory(), "files"));
@@ -72,19 +116,78 @@ namespace ScienceFairEncryption
              
              */
 
+
+            /////////////////////// AES Encryption ////////////////////////////////////////////////////////////////
+            List<string> encryptionSet1 = new List<string>()
+            {
+                "encryptionAES1.txt",
+                "encryptionAES2.txt",
+                "encryptionAES3.txt",
+                "encryptionAES4.txt",
+                "encryptionAES5.txt",
+            };
+
+            List<string> encryptionSet2 = new List<string>()
+            {
+                "encryptionAES6.txt",
+                "encryptionAES7.txt",
+                "encryptionAES8.txt",
+                "encryptionAES9.txt",
+                "encryptionAES10.txt",
+            };
+
             print("AES: Encryption");
+            foreach (string item in encryptionSet1)
+            {
+                string encryptedText = await encryptFileContent(item, EncryptionMode.AES);
+                using (FileStream stream = new FileStream(getFilePath(item), FileMode.OpenOrCreate))
+                    using (StreamWriter writer = new StreamWriter(stream))
+                        await writer.WriteAsync(encryptedText);
 
-            encryptFileContent("encryptionAES1.txt");
-            print("File 1: One KB: " + getStopwatchTime(stopWatch).ToString("ss':'fff"));
+                print("File encryption: " + item + " - " + getStopwatchTime(stopWatch).ToString("ss':'fff"));
+            }
 
-            encryptFileContent("encryptionAES2.txt");
-            print("File 2: One MB: " + getStopwatchTime(stopWatch).ToString("ss':'fff"));
+            print("AES: Decryption");
+            foreach (string item in encryptionSet1)
+            {
+                string decrypted = await decryptFileContent(item, EncryptionMode.AES);
+                using (FileStream stream = new FileStream(getFilePath(item), FileMode.OpenOrCreate))
+                    using (StreamWriter writer = new StreamWriter(stream))
+                        await writer.WriteAsync(decrypted);
 
-            encryptFileContent("encryptionAES3.txt");
-            print("File 3: One GB: " + getStopwatchTime(stopWatch).ToString("ss':'fff"));
+                print("File decryption: " + item + " - " + getStopwatchTime(stopWatch).ToString("ss':'fff"));
+            }
 
-            print("Press any key to exit...");
+            print("DES: Encryption");
+            foreach (string item in encryptionSet2)
+            {
+                string encryptedText = await encryptFileContent(item, EncryptionMode.DES);
+                using (FileStream stream = new FileStream(getFilePath(item), FileMode.OpenOrCreate))
+                using (StreamWriter writer = new StreamWriter(stream))
+                    await writer.WriteAsync(encryptedText);
+
+                print("File encryption: " + item + " - " + getStopwatchTime(stopWatch).ToString("ss':'fff"));
+            }
+
+            print("DES: Decryption");
+            foreach (string item in encryptionSet2)
+            {
+                string decrypted = await decryptFileContent(item, EncryptionMode.DES);
+                using (FileStream stream = new FileStream(getFilePath(item), FileMode.OpenOrCreate))
+                using (StreamWriter writer = new StreamWriter(stream))
+                    await writer.WriteAsync(decrypted);
+
+                print("File decryption: " + item + " - " + getStopwatchTime(stopWatch).ToString("ss':'fff"));
+            }
+
+            print("Press enter to exit...");
             Console.ReadLine();
         }
+    }
+
+    enum EncryptionMode
+    {
+        AES,
+        DES,
     }
 }
