@@ -66,6 +66,12 @@ namespace ScienceFairEncryption
             Stopwatch stopWatch = new Stopwatch();
             stopWatch.Start();
 
+            /*
+             
+            * make async (will probably yield more accurate results)
+             
+             */
+
             print("AES: Encryption");
 
             encryptFileContent("encryptionAES1.txt");
