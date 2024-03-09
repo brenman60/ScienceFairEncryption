@@ -49,6 +49,9 @@ namespace ScienceFairEncryption
             char[] data = new char[blockSize];
             Random rng = new Random();
 
+            if (File.Exists(getFilePath(fileName)))
+                File.Delete(getFilePath(fileName));
+
             using (FileStream stream = File.OpenWrite(getFilePath(fileName)))
             {
                 for (int i = 0; i < (length / 1000000) * blocksPerMb; i++)
@@ -101,6 +104,10 @@ namespace ScienceFairEncryption
 
         static async Task Main(string[] args)
         {
+            Process process = Process.GetCurrentProcess();
+            PerformanceCounter cpu = new PerformanceCounter("Processor", "% Processor Time", "_Total");
+            PerformanceCounter ram = new PerformanceCounter("Memory", "Committed Bytes", null);
+
             if (!Directory.Exists(Path.Combine(Directory.GetCurrentDirectory(), "files")))
                 Directory.CreateDirectory(Path.Combine(Directory.GetCurrentDirectory(), "files"));
 
@@ -144,8 +151,13 @@ namespace ScienceFairEncryption
                     using (StreamWriter writer = new StreamWriter(stream))
                         await writer.WriteAsync(encryptedText);
 
-                print("File encryption: " + item + " - " + getStopwatchTime(stopWatch).ToString("ss':'fff"));
+                double CPUusage = cpu.NextValue();
+                double RAMusage = ram.NextValue();
+                print("File encryption: " + item + " - " + getStopwatchTime(stopWatch).ToString("ss':'fff") + " - " + CPUusage + " - " + RAMusage);
             }
+            print("\n");
+
+            await Task.Delay(10000);
 
             print("AES: Decryption");
             foreach (string item in encryptionSet1)
@@ -155,8 +167,13 @@ namespace ScienceFairEncryption
                     using (StreamWriter writer = new StreamWriter(stream))
                         await writer.WriteAsync(decrypted);
 
-                print("File decryption: " + item + " - " + getStopwatchTime(stopWatch).ToString("ss':'fff"));
+                double CPUusage = cpu.NextValue();
+                double RAMusage = ram.NextValue();
+                print("File decryption: " + item + " - " + getStopwatchTime(stopWatch).ToString("ss':'fff") + " - " + CPUusage + " - " + RAMusage);
             }
+            print("\n");
+
+            await Task.Delay(10000);
 
             print("DES: Encryption");
             foreach (string item in encryptionSet2)
@@ -166,8 +183,13 @@ namespace ScienceFairEncryption
                 using (StreamWriter writer = new StreamWriter(stream))
                     await writer.WriteAsync(encryptedText);
 
-                print("File encryption: " + item + " - " + getStopwatchTime(stopWatch).ToString("ss':'fff"));
+                double CPUusage = cpu.NextValue();
+                double RAMusage = ram.NextValue();
+                print("File encryption: " + item + " - " + getStopwatchTime(stopWatch).ToString("ss':'fff") + " - " + CPUusage + " - " + RAMusage);
             }
+            print("\n");
+
+            await Task.Delay(10000);
 
             print("DES: Decryption");
             foreach (string item in encryptionSet2)
@@ -177,8 +199,11 @@ namespace ScienceFairEncryption
                 using (StreamWriter writer = new StreamWriter(stream))
                     await writer.WriteAsync(decrypted);
 
-                print("File decryption: " + item + " - " + getStopwatchTime(stopWatch).ToString("ss':'fff"));
+                double CPUusage = cpu.NextValue();
+                double RAMusage = ram.NextValue();
+                print("File decryption: " + item + " - " + getStopwatchTime(stopWatch).ToString("ss':'fff") + " - " + CPUusage + " - " + RAMusage);
             }
+            print("\n");
 
             print("Press enter to exit...");
             Console.ReadLine();
