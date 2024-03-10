@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace EncryptionDecryptionUsingSymmetricKey
 {
-    public class DesOperation
+    public class TripleDesOperation
     {
-        private static readonly string key = "b14ca589"; // 8-byte key for DES
+        private static readonly string key = "b14ca5898a4e4133b14ca589"; // 24-byte key for Triple DES
 
         public static string Key
         {
@@ -20,12 +20,12 @@ namespace EncryptionDecryptionUsingSymmetricKey
             byte[] iv = new byte[8];
             byte[] array;
 
-            using (DESCryptoServiceProvider des = new DESCryptoServiceProvider())
+            using (TripleDESCryptoServiceProvider tripleDes = new TripleDESCryptoServiceProvider())
             {
-                des.Key = Encoding.UTF8.GetBytes(key);
-                des.IV = iv;
+                tripleDes.Key = Encoding.UTF8.GetBytes(key);
+                tripleDes.IV = iv;
 
-                ICryptoTransform encryptor = des.CreateEncryptor(des.Key, des.IV);
+                ICryptoTransform encryptor = tripleDes.CreateEncryptor(tripleDes.Key, tripleDes.IV);
 
                 using (MemoryStream memoryStream = new MemoryStream())
                 {
@@ -49,11 +49,12 @@ namespace EncryptionDecryptionUsingSymmetricKey
             byte[] iv = new byte[8];
             byte[] buffer = Convert.FromBase64String(cipherText);
 
-            using (DESCryptoServiceProvider des = new DESCryptoServiceProvider())
+            using (TripleDESCryptoServiceProvider tripleDes = new TripleDESCryptoServiceProvider())
             {
-                des.Key = Encoding.UTF8.GetBytes(key);
-                des.IV = iv;
-                ICryptoTransform decryptor = des.CreateDecryptor(des.Key, des.IV);
+                tripleDes.Key = Encoding.UTF8.GetBytes(key);
+                tripleDes.IV = iv;
+
+                ICryptoTransform decryptor = tripleDes.CreateDecryptor(tripleDes.Key, tripleDes.IV);
 
                 using (MemoryStream memoryStream = new MemoryStream(buffer))
                 {

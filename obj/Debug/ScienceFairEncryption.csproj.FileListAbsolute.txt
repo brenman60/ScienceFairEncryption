@@ -5,3 +5,6 @@ C:\Users\Brennan\source\repos\ScienceFairEncryption\bin\Debug\ScienceFairEncrypt
 C:\Users\Brennan\source\repos\ScienceFairEncryption\bin\Debug\ScienceFairEncryption.pdb
 C:\Users\Brennan\source\repos\ScienceFairEncryption\obj\Debug\ScienceFairEncryption.exe
 C:\Users\Brennan\source\repos\ScienceFairEncryption\obj\Debug\ScienceFairEncryption.pdb
+C:\Users\Brennan\source\repos\ScienceFairEncryption\bin\Debug\BouncyCastle.Crypto.dll
+C:\Users\Brennan\source\repos\ScienceFairEncryption\bin\Debug\BouncyCastle.Crypto.xml
+C:\Users\Brennan\source\repos\ScienceFairEncryption\obj\Debug\ScienceF.C6733F37.Up2Date

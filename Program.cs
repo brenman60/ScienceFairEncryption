@@ -18,11 +18,23 @@ namespace ScienceFairEncryption
             ["encryptionAES4.txt"] = 1000000 * 25, // twenty five MB
             ["encryptionAES5.txt"] = 1000000 * 50, // fifty MB
 
-            ["encryptionAES6.txt"] = 1000, // one KB
-            ["encryptionAES7.txt"] = 1000000, // one MB
-            ["encryptionAES8.txt"] = 1000000 * 10, // ten MB
-            ["encryptionAES9.txt"] = 1000000 * 25, // twenty five MB
-            ["encryptionAES10.txt"] = 1000000 * 50, // fifty MB
+            ["encryptionDES1.txt"] = 1000, // one KB
+            ["encryptionDES2.txt"] = 1000000, // one MB
+            ["encryptionDES3.txt"] = 1000000 * 10, // ten MB
+            ["encryptionDES4.txt"] = 1000000 * 25, // twenty five MB
+            ["encryptionDES5.txt"] = 1000000 * 50, // fifty MB
+
+            ["encryption3DES1.txt"] = 1000, // one KB
+            ["encryption3DES2.txt"] = 1000000, // one MB
+            ["encryption3DES3.txt"] = 1000000 * 10, // ten MB
+            ["encryption3DES4.txt"] = 1000000 * 25, // twenty five MB
+            ["encryption3DES5.txt"] = 1000000 * 50, // fifty MB
+
+            ["encryptionBlowfish1.txt"] = 1000, // one KB
+            ["encryptionBlowfish2.txt"] = 1000000, // one MB
+            ["encryptionBlowfish3.txt"] = 1000000 * 10, // ten MB
+            ["encryptionBlowfish4.txt"] = 1000000 * 25, // twenty five MB
+            ["encryptionBlowfish5.txt"] = 1000000 * 50, // fifty MB
         };
 
         static void print(object text) => Console.WriteLine(text);
@@ -80,6 +92,14 @@ namespace ScienceFairEncryption
                     using (FileStream fileStream = new FileStream(getFilePath(fileName), FileMode.Open))
                         using (StreamReader reader = new StreamReader(fileStream))
                             return await DesOperation.EncryptString(await reader.ReadToEndAsync());
+                case EncryptionMode.TripleDES:
+                    using (FileStream fileStream = new FileStream(getFilePath(fileName), FileMode.Open))
+                    using (StreamReader reader = new StreamReader(fileStream))
+                        return await TripleDesOperation.EncryptString(await reader.ReadToEndAsync());
+                case EncryptionMode.Blowfish:
+                    using (FileStream fileStream = new FileStream(getFilePath(fileName), FileMode.Open))
+                        using (StreamReader reader = new StreamReader(fileStream))
+                            return await BlowfishOperation.EncryptString(await reader.ReadToEndAsync());
                 default:
                     return null;
             }
@@ -91,12 +111,20 @@ namespace ScienceFairEncryption
             {
                 case EncryptionMode.AES:
                     using (FileStream fileStream = new FileStream(getFilePath(fileName), FileMode.Open))
-                    using (StreamReader reader = new StreamReader(fileStream))
-                        return await AesOperation.DecryptString(await reader.ReadToEndAsync());
+                        using (StreamReader reader = new StreamReader(fileStream))
+                            return await AesOperation.DecryptString(await reader.ReadToEndAsync());
                 case EncryptionMode.DES:
                     using (FileStream fileStream = new FileStream(getFilePath(fileName), FileMode.Open))
+                        using (StreamReader reader = new StreamReader(fileStream))
+                            return await DesOperation.DecryptString(await reader.ReadToEndAsync());
+                case EncryptionMode.TripleDES:
+                    using (FileStream fileStream = new FileStream(getFilePath(fileName), FileMode.Open))
                     using (StreamReader reader = new StreamReader(fileStream))
-                        return await DesOperation.DecryptString(await reader.ReadToEndAsync());
+                        return await TripleDesOperation.DecryptString(await reader.ReadToEndAsync());
+                case EncryptionMode.Blowfish:
+                    using (FileStream fileStream = new FileStream(getFilePath(fileName), FileMode.Open))
+                        using (StreamReader reader = new StreamReader(fileStream))
+                            return await BlowfishOperation.DecryptString(await reader.ReadToEndAsync());
                 default:
                     return null;
             }
@@ -123,7 +151,6 @@ namespace ScienceFairEncryption
              
              */
 
-
             /////////////////////// AES Encryption ////////////////////////////////////////////////////////////////
             List<string> encryptionSet1 = new List<string>()
             {
@@ -136,11 +163,29 @@ namespace ScienceFairEncryption
 
             List<string> encryptionSet2 = new List<string>()
             {
-                "encryptionAES6.txt",
-                "encryptionAES7.txt",
-                "encryptionAES8.txt",
-                "encryptionAES9.txt",
-                "encryptionAES10.txt",
+                "encryptionDES1.txt",
+                "encryptionDES2.txt",
+                "encryptionDES3.txt",
+                "encryptionDES4.txt",
+                "encryptionDES5.txt",
+            };
+
+            List<string> encryptionSet3 = new List<string>()
+            {
+                "encryption3DES1.txt",
+                "encryption3DES2.txt",
+                "encryption3DES3.txt",
+                "encryption3DES4.txt",
+                "encryption3DES5.txt",
+            };
+
+            List<string> encryptionSet4 = new List<string>()
+            {
+                "encryptionBlowfish1.txt",
+                "encryptionBlowfish2.txt",
+                "encryptionBlowfish3.txt",
+                "encryptionBlowfish4.txt",
+                "encryptionBlowfish5.txt",
             };
 
             print("AES: Encryption");
@@ -158,6 +203,7 @@ namespace ScienceFairEncryption
             print("\n");
 
             await Task.Delay(10000);
+            getStopwatchTime(stopWatch);
 
             print("AES: Decryption");
             foreach (string item in encryptionSet1)
@@ -174,6 +220,7 @@ namespace ScienceFairEncryption
             print("\n");
 
             await Task.Delay(10000);
+            getStopwatchTime(stopWatch);
 
             print("DES: Encryption");
             foreach (string item in encryptionSet2)
@@ -190,11 +237,80 @@ namespace ScienceFairEncryption
             print("\n");
 
             await Task.Delay(10000);
+            getStopwatchTime(stopWatch);
 
             print("DES: Decryption");
             foreach (string item in encryptionSet2)
             {
                 string decrypted = await decryptFileContent(item, EncryptionMode.DES);
+                using (FileStream stream = new FileStream(getFilePath(item), FileMode.OpenOrCreate))
+                using (StreamWriter writer = new StreamWriter(stream))
+                    await writer.WriteAsync(decrypted);
+
+                double CPUusage = cpu.NextValue();
+                double RAMusage = ram.NextValue();
+                print("File decryption: " + item + " - " + getStopwatchTime(stopWatch).ToString("ss':'fff") + " - " + CPUusage + " - " + RAMusage);
+            }
+            print("\n");
+
+            await Task.Delay(10000);
+            getStopwatchTime(stopWatch);
+
+            print("Triple DES: Encryption");
+            foreach (string item in encryptionSet3)
+            {
+                string encryptedText = await encryptFileContent(item, EncryptionMode.Blowfish);
+                using (FileStream stream = new FileStream(getFilePath(item), FileMode.OpenOrCreate))
+                using (StreamWriter writer = new StreamWriter(stream))
+                    await writer.WriteAsync(encryptedText);
+
+                double CPUusage = cpu.NextValue();
+                double RAMusage = ram.NextValue();
+                print("File encryption: " + item + " - " + getStopwatchTime(stopWatch).ToString("ss':'fff") + " - " + CPUusage + " - " + RAMusage);
+            }
+            print("\n");
+
+            await Task.Delay(10000);
+            getStopwatchTime(stopWatch);
+
+            print("Triple DES: Decryption");
+            foreach (string item in encryptionSet3)
+            {
+                string decrypted = await decryptFileContent(item, EncryptionMode.Blowfish);
+                using (FileStream stream = new FileStream(getFilePath(item), FileMode.OpenOrCreate))
+                using (StreamWriter writer = new StreamWriter(stream))
+                    await writer.WriteAsync(decrypted);
+
+                double CPUusage = cpu.NextValue();
+                double RAMusage = ram.NextValue();
+                print("File decryption: " + item + " - " + getStopwatchTime(stopWatch).ToString("ss':'fff") + " - " + CPUusage + " - " + RAMusage);
+            }
+            print("\n");
+
+            await Task.Delay(10000);
+            getStopwatchTime(stopWatch);
+
+            print("Blowfish: Encryption");
+            foreach (string item in encryptionSet4)
+            {
+                string encryptedText = await encryptFileContent(item, EncryptionMode.Blowfish);
+                using (FileStream stream = new FileStream(getFilePath(item), FileMode.OpenOrCreate))
+                using (StreamWriter writer = new StreamWriter(stream))
+                    await writer.WriteAsync(encryptedText);
+
+                double CPUusage = cpu.NextValue();
+                double RAMusage = ram.NextValue();
+                print("File encryption: " + item + " - " + getStopwatchTime(stopWatch).ToString("ss':'fff") + " - " + CPUusage + " - " + RAMusage);
+            }
+            print("\n");
+
+            await Task.Delay(10000);
+            getStopwatchTime(stopWatch);
+
+            print("Blowfish: Decryption");
+            foreach (string item in encryptionSet4)
+            {
+                string decrypted = await decryptFileContent(item, EncryptionMode.Blowfish);
                 using (FileStream stream = new FileStream(getFilePath(item), FileMode.OpenOrCreate))
                 using (StreamWriter writer = new StreamWriter(stream))
                     await writer.WriteAsync(decrypted);
@@ -214,5 +330,7 @@ namespace ScienceFairEncryption
     {
         AES,
         DES,
+        TripleDES,
+        Blowfish,
     }
 }
