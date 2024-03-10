@@ -1,0 +1,10 @@
+C:\Users\Brennan\source\repos\ScienceFairEncryption\bin\Release\ScienceFairEncryption.exe.config
+C:\Users\Brennan\source\repos\ScienceFairEncryption\bin\Release\ScienceFairEncryption.exe
+C:\Users\Brennan\source\repos\ScienceFairEncryption\bin\Release\ScienceFairEncryption.pdb
+C:\Users\Brennan\source\repos\ScienceFairEncryption\bin\Release\BouncyCastle.Crypto.dll
+C:\Users\Brennan\source\repos\ScienceFairEncryption\bin\Release\BouncyCastle.Crypto.xml
+C:\Users\Brennan\source\repos\ScienceFairEncryption\obj\Release\ScienceFairEncryption.csproj.AssemblyReference.cache
+C:\Users\Brennan\source\repos\ScienceFairEncryption\obj\Release\ScienceFairEncryption.csproj.CoreCompileInputs.cache
+C:\Users\Brennan\source\repos\ScienceFairEncryption\obj\Release\ScienceF.C6733F37.Up2Date
+C:\Users\Brennan\source\repos\ScienceFairEncryption\obj\Release\ScienceFairEncryption.exe
+C:\Users\Brennan\source\repos\ScienceFairEncryption\obj\Release\ScienceFairEncryption.pdb
