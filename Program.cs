@@ -8,6 +8,16 @@ using EncryptionDecryptionUsingSymmetricKey;
 
 namespace ScienceFairEncryption
 {
+    /*
+     * 
+     * 
+     * A COUPLE NOTES REGARDING THIS CODE:
+     *  1. This code is messy, unregulated, length inefficient (there's so much that can be crunched into functions it's terrible), and probably inefficient in general, please pay it no mind programmers.
+     *  2. I did not write each encryption algorithm, this file is the only one I actually wrote completely by hand. ChatGPT wrote the rest. I have no idea how to write encryption algorithms :((((((( -- (feeling like a failure of a programmer)
+     * 
+     * 
+     */
+
     internal class Program
     {
         static Dictionary<string, long> files = new Dictionary<string, long>()
@@ -145,13 +155,6 @@ namespace ScienceFairEncryption
             Stopwatch stopWatch = new Stopwatch();
             stopWatch.Start();
 
-            /*
-             
-            * make async (will probably yield more accurate results)
-             
-             */
-
-            /////////////////////// AES Encryption ////////////////////////////////////////////////////////////////
             List<string> encryptionSet1 = new List<string>()
             {
                 "encryptionAES1.txt",
